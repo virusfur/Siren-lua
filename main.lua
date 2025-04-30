@@ -12,17 +12,22 @@ function love.load()
     player:setFixedRotation(true)
 
     walls = {}
-    walls[1] = world:newRectangleCollider(100,15,10,270)
-    walls[2] = world:newRectangleCollider(530,15,10,270)
-    walls[3] = world:newRectangleCollider(110,15,420,10)
-    walls[4] = world:newRectangleCollider(110,275,420,10)
+    walls[1] = world:newRectangleCollider(100+30,15,10,270)
+    walls[2] = world:newRectangleCollider(530+30,15,10,270)
+    walls[3] = world:newRectangleCollider(110+30,15,420,10)
+    walls[4] = world:newRectangleCollider(110+30,275,420,10)
     --set types
     walls[1]:setType('static')
     walls[2]:setType('static')
     walls[3]:setType('static')
     walls[4]:setType('static')
 
-    oven
+    oven = {}
+    oven.collider1 = world:newBSGRectangleCollider(180,20,134,37, 14)
+    oven.collider2 = world:newRectangleCollider(226,20+37,43,20)
+    oven.collider1:setType('static')
+    oven.collider2:setType('static')
+    oven.texture = love.graphics.newImage('Assets/Sprites/oven.png')
 end
 
 function love.update(dt)
@@ -49,4 +54,5 @@ end
 
 function love.draw()
     world:draw()
+    love.graphics.draw(oven.texture, 180,20)
 end
