@@ -22,6 +22,7 @@ function love.load()
     --player init
     player = world:newRectangleCollider(200,150, 32,44)
     player.speed = 80
+    player.isLeft = false
     player:setFixedRotation(true)
     player.SpriteSheet = love.graphics.newImage("Assets/Sprites/ZamiSpSh.png")
 
@@ -29,8 +30,12 @@ function love.load()
     --set grid
     player.AnimGrid = anim8.newGrid(34,44, 272,92)
 
+    --animayions
     player.Animations = {}
     player.Animations.IdleClothes = anim8.newAnimation(player.AnimGrid('1-2', 1),0.5)
+    player.Animations.WalkClothes = anim8.newAnimation(player.AnimGrid('3-4', 1),0.3)
+
+    player.AnimSet = player.Animations.IdleClothes
     --------------------------
 
     oven = {}
@@ -47,15 +52,21 @@ end
 function love.update(dt)
     world:update(dt)
 
+    player.AnimSet = player.Animations.IdleClothes
+
     playerMovement()
 
-    player.Animations.IdleClothes:update(dt)
+    player.AnimSet:update(dt)
 end
 
 function love.draw()
-    love.graphics.draw(oven.texture, 180+20,20) --draw oven lol
-    player.Animations.IdleClothes:draw(player.SpriteSheet, player:getX()-16, player:getY()-22)
-    love.graphics.draw(Walls, 130,15) --draw walls, lol
+    love.graphics.draw(oven.texture, 180+20,20)
+    if player.isLeft == false then
+        player.AnimSet:draw(player.SpriteSheet, player:getX()-16, player:getY()-22)
+    elseif player.isLeft == true then
+        player.AnimSet:draw(player.SpriteSheet, player:getX()+16, player:getY()-22, nil, -1,1)
+    end
+    love.graphics.draw(Walls, 130,15)
     world:draw()
 end
 
@@ -66,16 +77,23 @@ function playerMovement()
 
     if love.keyboard.isDown('right') then
         vx = player.speed
+        player.isLeft = false
+        player.AnimSet = player.Animations.WalkClothes
     end
     if love.keyboard.isDown('left') then
         vx = player.speed * -1
+        player.isLeft = true
+        player.AnimSet = player.Animations.WalkClothes
     end
     if love.keyboard.isDown('down') then
         vy = player.speed
+        player.AnimSet = player.Animations.WalkClothes
     end
     if love.keyboard.isDown('up') then
         vy = player.speed * -1
+        player.AnimSet = player.Animations.WalkClothes
     end
 
     player:setLinearVelocity(vx,vy)
+
 end
